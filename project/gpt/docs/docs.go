@@ -117,7 +117,7 @@ var doc = `{
                 }
             }
         },
-        "/v1/thread/{threadId}": {
+        "/v1/threads/{threadId}": {
             "delete": {
                 "description": "删除线程",
                 "consumes": [

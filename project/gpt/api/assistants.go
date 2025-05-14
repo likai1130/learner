@@ -111,7 +111,7 @@ func ListMessages(c *gin.Context) {
 // @Param threadId path string true "线程ID"
 // @Success 200 {object} service.Response{} "{"code": 200, "data": [...]}"
 // @Success 500 {object} service.Response
-// @Router /v1/thread/{threadId} [delete]
+// @Router /v1/threads/{threadId} [delete]
 func Clear(c *gin.Context) {
 	threadId := c.Param("threadId")
 	ass := service.NewAssistants()

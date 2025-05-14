@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
 	"github.com/sashabaranov/go-openai"
 	"learner/project/gpt/service/assistants"
@@ -48,11 +50,29 @@ func (a *Assistants) AddAndRun(ctx context.Context, req RunRequest) Response {
 		}
 	}
 	for {
+		step, err := a.threads.ListRunStep(ctx, run.ThreadID, run.ID, assistants.PageTools{
+			Limit: 100,
+			Order: "desc",
+		})
+		if err != nil {
+			return internalServerError(errors.WithMessage(err, "ListRunStep出错"))
+		}
+		marshal, _ := json.Marshal(step)
+		fmt.Println("step:", string(marshal))
+
 		getRun, err := a.threads.GetRun(ctx, run.ThreadID, run.ID)
 		if err != nil {
 			return internalServerError(errors.WithMessage(err, "for getRun线程出错"))
 		}
 		log.Println("当前执行状态为", getRun.Status)
+		if getRun.Status == openai.RunStatusRequiresAction {
+			log.Println("当前执行SubmitToolOutputs")
+			toolOutputs := getRun.RequiredAction.SubmitToolOutputs
+			getRun, err = a.threads.SubmitToolOutputs(ctx, run.ThreadID, run.ID, toolOutputs)
+			if err != nil {
+				return internalServerError(errors.WithMessage(err, "SubmitToolOutputs 提交tools数据失败"))
+			}
+		}
 		if getRun.Status == openai.RunStatusCompleted {
 			return ok(getRun)
 		}

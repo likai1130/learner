@@ -74,29 +74,6 @@ paths:
       summary: 创建AI助手
       tags:
       - AI 助手
-  /v1/thread/{threadId}:
-    delete:
-      consumes:
-      - application/json
-      description: 删除线程
-      parameters:
-      - description: 线程ID
-        in: path
-        name: threadId
-        required: true
-        type: string
-      responses:
-        "200":
-          description: '{"code": 200, "data": [...]}'
-          schema:
-            $ref: '#/definitions/service.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/service.Response'
-      summary: 删除线程
-      tags:
-      - AI 助手
   /v1/thread/run:
     post:
       consumes:
@@ -119,6 +96,29 @@ paths:
           schema:
             $ref: '#/definitions/service.Response'
       summary: 创建消息并且运行
+      tags:
+      - AI 助手
+  /v1/threads/{threadId}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除线程
+      parameters:
+      - description: 线程ID
+        in: path
+        name: threadId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{"code": 200, "data": [...]}'
+          schema:
+            $ref: '#/definitions/service.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/service.Response'
+      summary: 删除线程
       tags:
       - AI 助手
   /v1/threads/{threadId}/messages:

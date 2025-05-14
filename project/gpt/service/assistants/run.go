@@ -13,6 +13,7 @@ type ThreadRun interface {
 	ListRuns(ctx context.Context, threadId string, pageTools PageTools) (openai.RunList, error)
 	GetRunStep(ctx context.Context, threadId, runId, stepId string) (openai.RunStep, error)
 	ListRunStep(ctx context.Context, threadId, runId string, pageTools PageTools) (openai.RunStepList, error)
+	SubmitToolOutputs(ctx context.Context, threadId, runId string, outPuts *openai.SubmitToolOutputs) (openai.Run, error)
 }
 
 // CreateAndRun TODO Metadata
@@ -61,6 +62,21 @@ func (t *thread) ListRuns(ctx context.Context, threadId string, pageTools PageTo
 
 func (t *thread) GetRunStep(ctx context.Context, threadId, runId, stepId string) (openai.RunStep, error) {
 	return t.cli.RetrieveRunStep(ctx, threadId, runId, stepId)
+}
+
+func (t *thread) SubmitToolOutputs(ctx context.Context, threadId, runId string, outPuts *openai.SubmitToolOutputs) (openai.Run, error) {
+	var outP []openai.ToolOutput
+	for _, outCall := range outPuts.ToolCalls {
+		o := openai.ToolOutput{
+			ToolCallID: outCall.ID,
+			Output:     true,
+		}
+		outP = append(outP, o)
+	}
+
+	return t.cli.SubmitToolOutputs(ctx, threadId, runId, openai.SubmitToolOutputsRequest{
+		ToolOutputs: outP,
+	})
 }
 
 func (t *thread) ListRunStep(ctx context.Context, threadId, runId string, pageTools PageTools) (openai.RunStepList, error) {
