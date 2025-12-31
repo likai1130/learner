@@ -41,8 +41,9 @@ func TestZhongO(t *testing.T) {
 func TestJiaoYin(t *testing.T) {
 	var costPrice = 3.9368                          //成本单价
 	var initialPurchaseQuantity = float64(19533.50) // 初买入数量
-	var netReplenishmentValue = 3.3760              //补仓净值
-	var replenishmentQuantity = float64(5000)       // 补仓数量
+	//var netReplenishmentValue = 3.3760              //补仓净值
+	var netReplenishmentValue = 3.1840        //补仓净值
+	var replenishmentQuantity = float64(5000) // 补仓数量
 	fund := NewFund("交银新成长混合", 40)
 	fund.ExecCover(costPrice, initialPurchaseQuantity, netReplenishmentValue, replenishmentQuantity)
 }
